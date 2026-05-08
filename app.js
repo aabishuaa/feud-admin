@@ -1,73 +1,61 @@
-
+const questionList = document.getElementById("questionList");
+const searchInput = document.getElementById("search");
+const activeQuestion = document.getElementById("activeQuestion");
+const answersDiv = document.getElementById("answers");
 
 let currentRound = null;
-let reveal = false;
 
-// flatten questions
-const questions = GAME_DATA.rounds;
+// ─────────────────────────────
+// Render question list
+// ─────────────────────────────
+function renderList(filter = "") {
+questionList.innerHTML = "";
 
-const qContainer = document.getElementById("questions");
-const search = document.getElementById("search");
-const qText = document.getElementById("qText");
-const answers = document.getElementById("answers");
+GAME_DATA.rounds
+.filter(r => r.question.toLowerCase().includes(filter.toLowerCase()))
+.forEach((round, index) => {
 
-// render list
-function render(list) {
-qContainer.innerHTML = "";
-
-list.forEach((r, i) => {
 const div = document.createElement("div");
-div.className = "question-card";
-div.innerText = `Round ${r.id}: ${r.question}`;
+div.className = "question-item";
+div.textContent = `${index + 1}. ${round.question}`;
 
-div.onclick = () => loadRound(i);
+div.onclick = () => loadRound(round);
 
-qContainer.appendChild(div);
+questionList.appendChild(div);
 });
 }
 
-// load question
-function loadRound(index) {
-currentRound = questions[index];
-reveal = false;
+// ─────────────────────────────
+// Load selected question
+// ─────────────────────────────
+function loadRound(round) {
+currentRound = round;
 
-qText.innerText = currentRound.question;
-renderAnswers();
-}
+activeQuestion.textContent = round.question;
+answersDiv.innerHTML = "";
 
-// render answers
-function renderAnswers() {
-answers.innerHTML = "";
+round.answers.forEach((a, i) => {
+const row = document.createElement("div");
+row.className = "answer hidden";
 
-if (!currentRound) return;
+row.innerHTML = `
+<div class="answer-number">${i + 1}</div>
+<div>${a.text}</div>
+<div>${a.points}</div>
+`;
 
-currentRound.answers.forEach(a => {
-const li = document.createElement("li");
+row.onclick = () => row.classList.toggle("hidden");
 
-li.innerText = reveal
-? `${a.text} — ${a.points}`
-: "???";
-
-answers.appendChild(li);
+answersDiv.appendChild(row);
 });
 }
 
-// search
-search.addEventListener("input", e => {
-const val = e.target.value.toLowerCase();
-
-const filtered = questions.filter(q =>
-q.question.toLowerCase().includes(val)
-);
-
-render(filtered);
+// ─────────────────────────────
+// Search
+// ─────────────────────────────
+searchInput.addEventListener("input", (e) => {
+renderList(e.target.value);
 });
 
-// reveal button
-document.getElementById("revealBtn").onclick = () => {
-reveal = !reveal;
-renderAnswers();
-};
-
-// initial render
-render(questions);
+// init
+renderList();
