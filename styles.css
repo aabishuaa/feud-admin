@@ -1,0 +1,45 @@
+body {
+font-family: Arial, sans-serif;
+background: #0b1a3a;
+color: white;
+padding: 20px;
+}
+
+h1 {
+color: gold;
+}
+
+input {
+padding: 10px;
+width: 100%;
+margin-bottom: 20px;
+}
+
+.question-card {
+padding: 10px;
+background: #122b66;
+margin: 5px 0;
+cursor: pointer;
+}
+
+.question-card:hover {
+background: #1e4bd8;
+}
+
+#viewer {
+margin-top: 20px;
+padding: 15px;
+background: #111;
+border: 1px solid gold;
+}
+
+.hidden {
+display: none;
+}
+
+li {
+padding: 5px;
+}
+
+
+
